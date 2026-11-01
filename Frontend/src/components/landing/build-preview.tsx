@@ -14,8 +14,8 @@ const script: { stage: string; text: string; tone: Tone; hold: number }[] = [
   { stage: "build", text: "next build", tone: "default", hold: 420 },
   { stage: "build", text: "compiled 11 routes in 4.8s", tone: "muted", hold: 520 },
   { stage: "build", text: "static assets emitted → .next", tone: "ok", hold: 460 },
-  { stage: "upload", text: "uploaded 148 objects to s3://launchpad-outputs", tone: "default", hold: 620 },
-  { stage: "deploy", text: "attaching storefront.launch-pad.dev", tone: "default", hold: 520 },
+  { stage: "upload", text: "uploaded 148 objects to s3://deploydock-outputs", tone: "default", hold: 620 },
+  { stage: "deploy", text: "attaching storefront.deploydock.dev", tone: "default", hold: 520 },
   { stage: "deploy", text: "tls certificate issued in 1.9s", tone: "ok", hold: 520 },
   { stage: "done", text: "deployment ready in 42.6s", tone: "ok", hold: 4200 },
 ];
@@ -123,7 +123,7 @@ export function BuildPreview() {
           <div className="mt-3.5 flex items-center justify-between gap-3">
             <span className="inline-flex items-center gap-1.5 text-[11px] text-faint">
               <Lock className="h-3 w-3" />
-              <span className="font-mono">storefront.launch-pad.dev</span>
+              <span className="font-mono">storefront.deploydock.dev</span>
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
               {done ? "live" : "building"}

@@ -730,7 +730,7 @@ function LaunchBody() {
 
               <div className="flex flex-col gap-3 rounded-lg border border-white/[0.09] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-[12px] leading-5 text-dim">
-                  Sign-in reads your identity and email. Connect only the repositories you want LaunchPad to deploy.
+                  Sign-in reads your identity and email. Connect only the repositories you want DeployDock to deploy.
                 </p>
                 {signInRequired ? (
                   <GitHubButton label="Sign in with the GitHub App" />
@@ -748,7 +748,7 @@ function LaunchBody() {
                   hint={
                     reposError
                       ? undefined
-                      : "Only repositories selected in your LaunchPad GitHub App installation are listed."
+                      : "Only repositories selected in your DeployDock GitHub App installation are listed."
                   }
                   error={reposError || undefined}
                 >

@@ -143,12 +143,12 @@ router.get('/google/callback', async (req, res) => {
 
 router.get('/github', (req, res) => {
     const GITHUB_CLIENT_ID = appConfigured() ? process.env.GITHUB_APP_CLIENT_ID : process.env.GITHUB_CLIENT_ID
-    const REDIRECT_URI = appConfigured() ? (process.env.GITHUB_APP_CALLBACK_URL || 'https://api.launch-pad.dev/auth/github-app/callback') : (process.env.GITHUB_CALLBACK_URL || 'http://localhost:9000/auth/github/callback')
+    const REDIRECT_URI = appConfigured() ? (process.env.GITHUB_APP_CALLBACK_URL || 'https://api.deploydock.dev/auth/github-app/callback') : (process.env.GITHUB_CALLBACK_URL || 'http://localhost:9000/auth/github/callback')
 
     if (!GITHUB_CLIENT_ID || !(appConfigured() ? process.env.GITHUB_APP_CLIENT_SECRET : process.env.GITHUB_CLIENT_SECRET)) return res.status(503).json({error: 'GitHub sign-in is not configured'})
     const state = randomBytes(32).toString('hex')
     const secure = REDIRECT_URI.startsWith('https://')
-    res.cookie(secure ? '__Host-launchpad_oauth' : 'launchpad_oauth', state, {httpOnly:true, secure, sameSite:'lax', path:'/', maxAge:600000})
+    res.cookie(secure ? '__Host-deploydock_oauth' : 'deploydock_oauth', state, {httpOnly:true, secure, sameSite:'lax', path:'/', maxAge:600000})
     const url = `https://github.com/login/oauth/authorize?${new URLSearchParams({client_id: GITHUB_CLIENT_ID, redirect_uri: REDIRECT_URI, ...(appConfigured() ? {} : {scope:'user:email'}), state})}`
     res.redirect(url)
 })
@@ -159,8 +159,8 @@ router.get(['/github/callback', '/github-app/callback'], async (req, res) => {
     const GITHUB_CLIENT_SECRET = appConfigured() ? process.env.GITHUB_APP_CLIENT_SECRET : process.env.GITHUB_CLIENT_SECRET
     const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000'
 
-    const secure = (appConfigured() ? (process.env.GITHUB_APP_CALLBACK_URL || 'https://api.launch-pad.dev/auth/github-app/callback') : (process.env.GITHUB_CALLBACK_URL || '')).startsWith('https://')
-    const cookieName = secure ? '__Host-launchpad_oauth' : 'launchpad_oauth'
+    const secure = (appConfigured() ? (process.env.GITHUB_APP_CALLBACK_URL || 'https://api.deploydock.dev/auth/github-app/callback') : (process.env.GITHUB_CALLBACK_URL || '')).startsWith('https://')
+    const cookieName = secure ? '__Host-deploydock_oauth' : 'deploydock_oauth'
     const cookies = Object.fromEntries((req.headers.cookie || '').split(';').map(v=>v.trim().split('=')))
     const expected = cookies[cookieName]
     const state = typeof req.query.state === 'string' ? req.query.state : ''

@@ -9,12 +9,12 @@ const envFile = path.join(root, '.env');
 const env = require('dotenv').parse(fs.existsSync(envFile) ? fs.readFileSync(envFile) : '');
 const port = Number(process.env.GITHUB_SETUP_PORT || 3101);
 const origin = `http://127.0.0.1:${port}`;
-const api = `https://api.${env.BASE_DOMAIN || 'launch-pad.dev'}`;
+const api = `https://api.${env.BASE_DOMAIN || 'deploydock.dev'}`;
 const state = crypto.randomBytes(32).toString('hex');
 const escape = value => String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
 const manifest = {
-  name: process.argv[2] || 'LaunchPad Deployments',
-  url: env.FRONTEND_URL || 'https://launch-pad.dev',
+  name: process.argv[2] || 'DeployDock Deployments',
+  url: env.FRONTEND_URL || 'https://deploydock.dev',
   redirect_url: `${origin}/callback`,
   callback_urls: [`${api}/auth/github-app/callback`],
   setup_url: `${api}/github/install/callback`,
@@ -24,7 +24,7 @@ const manifest = {
   default_permissions: { contents: 'read', metadata: 'read', emails: 'read', deployments: 'write' },
   default_events: ['push'],
   request_oauth_on_install: false,
-  description: 'Sign in to LaunchPad, connect selected repositories, and deploy changes from your chosen branch.'
+  description: 'Sign in to DeployDock, connect selected repositories, and deploy changes from your chosen branch.'
 };
 function updateEnv(values) {
   let source = fs.existsSync(envFile) ? fs.readFileSync(envFile, 'utf8') : '';
@@ -43,7 +43,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, origin);
   if (req.method !== 'GET') { res.writeHead(405); return res.end('Method not allowed'); }
   if (url.pathname === '/') {
-    return res.end(`<!doctype html><html lang="en"><meta charset="utf-8"><title>LaunchPad GitHub App setup</title><body style="background:#101010;color:#eee;font:16px system-ui;max-width:640px;margin:64px auto;padding:24px"><h1>Connect LaunchPad to GitHub</h1><p>Create one GitHub App for sign-in and selected repository deployments.</p><ul><li>Email addresses: read only</li><li>Repository contents and metadata: read only</li><li>Push notifications to ${escape(api)}/webhooks/github</li></ul><p>No code write or repository administration permissions. Select individual repositories when installing.</p><form method="post" action="https://github.com/settings/apps/new?state=${state}"><input type="hidden" name="manifest" value="${escape(JSON.stringify(manifest))}"><button style="background:#ff8738;border:0;padding:14px 20px;border-radius:8px;cursor:pointer">Review registration on GitHub</button></form><p>GitHub will ask you to confirm creation. The generated credentials are saved directly to the ignored root .env and .secrets directory.</p></body></html>`);
+    return res.end(`<!doctype html><html lang="en"><meta charset="utf-8"><title>DeployDock GitHub App setup</title><body style="background:#101010;color:#eee;font:16px system-ui;max-width:640px;margin:64px auto;padding:24px"><h1>Connect DeployDock to GitHub</h1><p>Create one GitHub App for sign-in and selected repository deployments.</p><ul><li>Email addresses: read only</li><li>Repository contents and metadata: read only</li><li>Push notifications to ${escape(api)}/webhooks/github</li></ul><p>No code write or repository administration permissions. Select individual repositories when installing.</p><form method="post" action="https://github.com/settings/apps/new?state=${state}"><input type="hidden" name="manifest" value="${escape(JSON.stringify(manifest))}"><button style="background:#ff8738;border:0;padding:14px 20px;border-radius:8px;cursor:pointer">Review registration on GitHub</button></form><p>GitHub will ask you to confirm creation. The generated credentials are saved directly to the ignored root .env and .secrets directory.</p></body></html>`);
   }
   if (url.pathname !== '/callback' || complete) { res.writeHead(404); return res.end('Not found'); }
   const received = url.searchParams.get('state') || '';
@@ -53,7 +53,7 @@ const server = http.createServer(async (req, res) => {
   }
   try {
     const response = await fetch(`https://api.github.com/app-manifests/${code}/conversions`, {
-      method: 'POST', headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'LaunchPad-Setup', 'X-GitHub-Api-Version': '2022-11-28' },
+      method: 'POST', headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'DeployDock-Setup', 'X-GitHub-Api-Version': '2022-11-28' },
       signal: AbortSignal.timeout(20000)
     });
     if (!response.ok) throw new Error('Manifest exchange failed');

@@ -43,7 +43,7 @@ const s3Client = new S3Client({
 async function detectFramework(owner: string, repo: string, pathStr: string, branch: string, token: string) {
     const headers = {
         ...(token ? { Authorization: `token ${token}` } : {}),
-        'User-Agent': 'LaunchPad-App',
+        'User-Agent': 'DeployDock-App',
         Accept: 'application/vnd.github.v3+json'
     }
 
@@ -268,7 +268,7 @@ router.get('/github/repos', async (req: Request, res: Response) => {
     const userId = res.locals.authUser.userId
     try {
         const user = await User.findById(userId)
-        if (!appConfigured()) return res.status(503).json({ error: 'The LaunchPad GitHub App setup is incomplete. Repository access is unavailable until it is configured.' })
+        if (!appConfigured()) return res.status(503).json({ error: 'The DeployDock GitHub App setup is incomplete. Repository access is unavailable until it is configured.' })
         if (user?.githubTokenKind !== 'app') return res.json({ repos: [], connectionRequired: true, signInRequired: true })
         const data = await userRepositories(user)
         const repos = data.map((repo: any) => ({
@@ -314,7 +314,7 @@ router.get('/github/tree', async (req: Request, res: Response) => {
                 timeout: 15000,
                 headers: {
                     ...(githubToken ? { Authorization: `token ${githubToken}` } : {}),
-                    'User-Agent': 'LaunchPad-App',
+                    'User-Agent': 'DeployDock-App',
                     Accept: 'application/vnd.github.v3+json'
                 }
             }
@@ -424,7 +424,7 @@ router.post('/', async (req: Request, res: Response) => {
             outputDir: typeof outputDir === 'string' ? outputDir.trim() : undefined,
             envVars, deploymentTarget, watchPaths, autoDeploy: !!access.installationId && req.body.autoDeploy !== false })
         const deployment = await enqueueDeployment(project, head.sha)
-        return res.status(202).json({ data: { projectSlug, url: `https://${projectSlug}.${process.env.BASE_DOMAIN || 'launch-pad.dev'}`, project, deployment } })
+        return res.status(202).json({ data: { projectSlug, url: `https://${projectSlug}.${process.env.BASE_DOMAIN || 'deploydock.dev'}`, project, deployment } })
     } catch (err: any) {
         return res.status(err instanceof GitHubSourceError ? 400 : err.status || 500).json({ error: err.status || err instanceof GitHubSourceError ? err.message : 'Could not queue deployment' })
     }
@@ -535,7 +535,7 @@ router.post('/:slug/redeploy', async (req: Request, res: Response) => {
         const source = repositoryFromURL(project.gitUrl)
         const access = await repositoryAccess(await User.findById(userId), source.owner, source.repo)
         if (project.githubRepositoryId && project.githubRepositoryId !== access.repo.id) {
-            return res.status(403).json({ error: 'Connect this project repository to the LaunchPad GitHub App first.' })
+            return res.status(403).json({ error: 'Connect this project repository to the DeployDock GitHub App first.' })
         }
         project.githubRepositoryId = access.repo.id
         project.githubInstallationId = access.installationId

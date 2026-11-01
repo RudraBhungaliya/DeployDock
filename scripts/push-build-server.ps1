@@ -1,8 +1,8 @@
-param([string]$Profile = 'Launchpad', [string]$Region = 'ap-south-1')
+param([string]$Profile = 'DeployDock', [string]$Region = 'ap-south-1')
 $ErrorActionPreference = 'Stop'
 $recentAws = Join-Path $env:LOCALAPPDATA 'Programs/Amazon/AWSCLIV2/aws.exe'
 $aws = if (Test-Path -LiteralPath $recentAws) { $recentAws } else { (Get-Command aws).Source }
-$repository = & $aws ecr describe-repositories --repository-names launchpad-build-worker --query 'repositories[0].repositoryUri' --output text --profile $Profile --region $Region --no-cli-pager
+$repository = & $aws ecr describe-repositories --repository-names deploydock-build-worker --query 'repositories[0].repositoryUri' --output text --profile $Profile --region $Region --no-cli-pager
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read ECR repository. Check your AWS login.' }
 $registry = ($repository.Trim() -split '/')[0]
 $password = & $aws ecr get-login-password --profile $Profile --region $Region

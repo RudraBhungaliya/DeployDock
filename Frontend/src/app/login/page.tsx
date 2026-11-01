@@ -22,7 +22,7 @@ function SignIn() {
       ) : null}
       <GitHubButton />
       <p className="text-center text-[12px] leading-relaxed text-faint">
-        LaunchPad uses GitHub for sign-in and repository access. There is no
+        DeployDock uses GitHub for sign-in and repository access. There is no
         separate password to create.
       </p>
     </div>
@@ -35,7 +35,7 @@ export default function LoginPage() {
       subtitle="Continue with GitHub to open your workspace and manage deployments."
       footer={
         <>
-          New to LaunchPad?{" "}
+          New to DeployDock?{" "}
           <Link
             href="/register"
             className="text-fg underline decoration-white/25 underline-offset-4 hover:decoration-fg"

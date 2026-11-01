@@ -1,4 +1,4 @@
-module launchpad/build-server
+module deploydock/build-server
 
 go 1.26.0
 

@@ -26,7 +26,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-[47ch] text-base leading-7 text-dim">
-            LaunchPad clones your repository, detects the framework, builds it
+            DeployDock clones your repository, detects the framework, builds it
             on Fargate and serves the output from the edge. Pick a folder,
             watch it compile, keep the subdomain.
           </p>

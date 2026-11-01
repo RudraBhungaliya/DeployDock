@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"launchpad/build-server/internal/adapter"
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/adapter"
+	"deploydock/build-server/internal/domain"
 )
 
 type fakeSource struct{ fail bool }

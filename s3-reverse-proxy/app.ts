@@ -34,7 +34,7 @@ export function createApp(deps: ProxyDependencies) {
             try { path = decodeURIComponent(req.originalUrl.split('?')[0]) }
             catch { return res.status(400).send('Invalid asset path') }
             if (path.includes('\0') || path.includes('\\') || path.split('/').some(part => part === '..' || part === '.')) return res.status(400).send('Invalid asset path')
-            if (path === '/.launchpad/health') return res.status(404).end()
+            if (path === '/.deploydock/health') return res.status(404).end()
             const runtime = route.runtime
             const web = ['nextjs-web', 'nodejs-web'].includes(runtime?.target || '')
             if (runtime?.target && runtime.target !== 'static' && !web) return res.status(503).send('Redeploy this project to configure its runtime')
@@ -72,7 +72,7 @@ export function createApp(deps: ProxyDependencies) {
                 return asset.body.pipe(res)
             }
             if (!runtime?.endpointUrl || !runtime.region || !validWebEndpoint(runtime.endpointUrl, runtime.region) ||
-                !/^lp-[a-z0-9-]+-web$/.test(runtime.functionName || '')) return res.status(503).send('Web Function is not configured')
+                !/^dd-[a-z0-9-]+-web$/.test(runtime.functionName || '')) return res.status(503).send('Web Function is not configured')
             await deps.forward(runtime, req, res)
         } catch (error: any) {
             if (res.headersSent) return res.destroy()

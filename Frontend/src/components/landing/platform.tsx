@@ -27,12 +27,12 @@ function ConsoleVisual() {
     { stage: "build", text: "compiled successfully", tone: "mint" },
     {
       stage: "upload",
-      text: "148 objects → s3://launchpad-outputs",
+      text: "148 objects → s3://deploydock-outputs",
       tone: "dim",
     },
     {
       stage: "deploy",
-      text: "storefront.launch-pad.dev is live",
+      text: "storefront.deploydock.dev is live",
       tone: "accent",
     },
   ];
@@ -158,7 +158,7 @@ function DomainsVisual() {
           className="flex items-center gap-2 rounded-md border border-white/[0.06] bg-black/35 px-2.5 py-1.5 font-mono text-[10.5px]"
         >
           <Lock className="h-2.5 w-2.5 text-white/25" />
-          <span className="truncate text-dim">{row.host}.launch-pad.dev</span>
+          <span className="truncate text-dim">{row.host}.deploydock.dev</span>
           <span
             className={cn(
               "ml-auto shrink-0",
@@ -254,7 +254,7 @@ const features = [
   {
     id: "domains",
     title: "Your own subdomain",
-    body: "Every project gets a TLS-secured LaunchPad subdomain after its first successful build.",
+    body: "Every project gets a TLS-secured DeployDock subdomain after its first successful build.",
     label: "Project domains",
     icon: Globe2,
     visual: DomainsVisual,
@@ -294,7 +294,7 @@ function FeatureVisual({ index }: { index: number }) {
           </span>
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
-              LaunchPad / {feature.id}
+              DeployDock / {feature.id}
             </p>
             <p className="mt-1 text-[14px] text-fg">{feature.label}</p>
           </div>

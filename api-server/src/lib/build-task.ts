@@ -9,7 +9,7 @@ export class BuildConfigurationError extends Error {}
 
 export async function triggerBuildTask(project: any, deployment: any, sourceAuthorization: string, heartbeat: () => Promise<void> = async () => {}) {
     const applicationEnv = project.envVars instanceof Map ? Object.fromEntries(project.envVars) : (project.envVars || {})
-    const callbackBase = process.env.BUILD_CALLBACK_BASE_URL || 'https://api.launch-pad.dev'
+    const callbackBase = process.env.BUILD_CALLBACK_BASE_URL || 'https://api.deploydock.dev'
     const env: Record<string, string> = {
         GIT_REPOSITORY__URL: project.gitUrl,
         SOURCE_AUTHORIZATION: sourceAuthorization,
@@ -59,9 +59,9 @@ export async function triggerBuildTask(project: any, deployment: any, sourceAuth
         if (!request) {
             request = {
                 cluster, taskDefinition, launchType: 'FARGATE', platformVersion: '1.4.0',
-                clientToken: deployment._id.toString(), startedBy: `lp-${deployment._id}`,
+                clientToken: deployment._id.toString(), startedBy: `dd-${deployment._id}`,
                 networkConfiguration: { awsvpcConfiguration: { subnets, securityGroups, assignPublicIp: 'ENABLED' } },
-                tags: [{ key: 'Application', value: 'LaunchPad' }, { key: 'Deployment', value: deployment._id.toString() }], overrides
+                tags: [{ key: 'Application', value: 'DeployDock' }, { key: 'Deployment', value: deployment._id.toString() }], overrides
             }
             // Reuse the exact ECS request after an uncertain SDK response. The
             // client token alone is insufficient if credentials/settings change.

@@ -48,7 +48,7 @@ export function AuthShell({
         </div>
 
         <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
-          <span>launch-pad.dev</span>
+          <span>deploydock.dev</span>
           <Link href="/" className="link-underline hover:text-fg">
             Back to site
           </Link>

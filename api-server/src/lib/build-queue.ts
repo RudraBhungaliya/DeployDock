@@ -4,8 +4,8 @@ import { Project } from '../models/Project'
 import { githubReportFor } from './github-deployments'
 import mongoose from 'mongoose'
 
-export const BUILD_TOPIC = process.env.KAFKA_BUILD_TOPIC || 'launchpad.deployments'
-export const BUILD_GROUP = 'launchpad-build-dispatcher-v1'
+export const BUILD_TOPIC = process.env.KAFKA_BUILD_TOPIC || 'deploydock.deployments'
+export const BUILD_GROUP = 'deploydock-build-dispatcher-v1'
 
 export function kafkaClient(clientId: string) {
     const brokers = (process.env.KAFKA_BROKERS || 'kafka:9092').split(',').map(value => value.trim()).filter(Boolean)
@@ -72,7 +72,7 @@ export async function publishPending(producer: Producer) {
 
 export function startBuildPublisher() {
     let stopping = false
-    const kafka = kafkaClient('launchpad-api-producer')
+    const kafka = kafkaClient('deploydock-api-producer')
     const producer = kafka.producer({ idempotent: true, maxInFlightRequests: 1 })
     const delay = () => new Promise(resolve => { const timer = setTimeout(resolve, 2000); timer.unref() })
     const run = async () => {

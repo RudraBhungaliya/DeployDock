@@ -14,7 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/lambdaweb"
 	web "github.com/aws/aws-sdk-go-v2/service/lambdaweb/types"
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 func TestRuntimeEndpointAndDeploymentIsolation(t *testing.T) {

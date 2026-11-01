@@ -13,7 +13,7 @@ router.get('/install/callback', async (req, res) => {
     try {
         if (typeof req.query.state !== 'string' || !/^[a-f0-9]{64}$/.test(req.query.state)) throw new Error('Invalid connection state')
         const connection = await GitHubConnection.findOneAndDelete({ stateHash: createHash('sha256').update(req.query.state).digest('hex'), expiresAt: { $gt: new Date() } })
-        if (!connection) throw new Error('Connection expired. Start again from LaunchPad.')
+        if (!connection) throw new Error('Connection expired. Start again from DeployDock.')
         if (connection.projectSlug) returnPath = `/project/${encodeURIComponent(connection.projectSlug)}`
         if (req.query.setup_action === 'request') throw new Error('Organization approval is pending. Connect again after an administrator approves the installation.')
         const id = Number(req.query.installation_id)
@@ -47,7 +47,7 @@ router.get('/install/callback', async (req, res) => {
 router.use(authMiddleware)
 router.post('/install/start', async (req, res) => {
     try {
-        if (!appConfigured()) return res.status(503).json({ error: 'The LaunchPad GitHub App has not been configured yet.' })
+        if (!appConfigured()) return res.status(503).json({ error: 'The DeployDock GitHub App has not been configured yet.' })
         await appUserToken(await User.findById(res.locals.authUser.userId))
         let projectSlug: string | undefined
         if (req.body.projectSlug) {

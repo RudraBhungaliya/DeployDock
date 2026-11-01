@@ -8,7 +8,7 @@ import { Deployment } from './src/models/Deployment'
 async function main() {
     await connectDB()
     await Deployment.init()
-    const kafka = kafkaClient('launchpad-deployment-worker')
+    const kafka = kafkaClient('deploydock-deployment-worker')
     await ensureBuildTopic(kafka)
     const consumer = kafka.consumer({ groupId: BUILD_GROUP, sessionTimeout: 60000, heartbeatInterval: 3000 })
     await consumer.connect()

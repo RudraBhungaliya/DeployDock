@@ -24,7 +24,7 @@ const columns = [
     links: [
       {
         label: "Repository",
-        href: "https://github.com/ayushdevani01/LaunchPad",
+        href: "https://github.com/ayushdevani01/DeployDock",
       },
       { label: "Questions", href: "#faq" },
       { label: "Support", href: "#faq" },
@@ -69,7 +69,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/[0.06] pt-6 font-mono text-[10px] uppercase tracking-[0.14em] text-faint sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 LaunchPad</span>
+          <span>© 2026 DeployDock</span>
           <span className="flex items-center gap-4">
             <span>Built on AWS</span>
             <span aria-hidden>·</span>

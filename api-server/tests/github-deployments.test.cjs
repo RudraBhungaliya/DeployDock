@@ -32,7 +32,7 @@ function fixture(t) {
 
 test('report metadata is durable, excludes credentials and gives every project its own environment and exact log URL', () => {
   const report = githubReportFor({ slug: 'my-app', gitUrl: 'https://github.com/owner/repo.git', githubInstallationId: 1, githubRepositoryId: 2 }, 'a'.repeat(24))
-  assert.equal(report.environment, 'LaunchPad / my-app')
+  assert.equal(report.environment, 'DeployDock / my-app')
   assert.equal(new URL(report.logUrl).searchParams.get('deployment'), 'a'.repeat(24))
   assert.equal(report.done, false)
   assert.equal(githubReportFor({ slug: 'public', gitUrl: 'https://github.com/owner/repo.git' }, 'a'.repeat(24)), undefined)
@@ -138,7 +138,7 @@ test('GitHub permission/rate-limit errors back off without changing build status
 
 test('reporting tokens grant deployments write for one repository and never grant contents write', async t => {
   const fs = require('node:fs'), os = require('node:os'), path = require('node:path'), crypto = require('node:crypto')
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'launchpad-test-app-key-'))
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'deploydock-test-app-key-'))
   const keyFile = path.join(directory, 'test.pem')
   const { privateKey } = crypto.generateKeyPairSync('rsa', { modulusLength: 2048, privateKeyEncoding: { type: 'pkcs8', format: 'pem' }, publicKeyEncoding: { type: 'spki', format: 'pem' } })
   fs.writeFileSync(keyFile, privateKey)

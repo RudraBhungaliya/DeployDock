@@ -32,7 +32,7 @@ test('HTTP request -> Mongo outbox -> real Kafka -> restarted worker -> one Farg
     assert.ok(action.endsWith('RunTask')); runCalls++; taskRequest = JSON.parse(body)
     res.end(JSON.stringify({ tasks: [{ taskArn: 'arn:aws:ecs:ap-south-1:000000000000:task/test/fixture' }] }))
   }).listen(0, '0.0.0.0'); await new Promise(resolve => ecs.once('listening', resolve))
-  const kafka = kafkaClient('launchpad-integration')
+  const kafka = kafkaClient('deploydock-integration')
   await ensureBuildTopic(kafka)
   const producer = kafka.producer({ idempotent: true, maxInFlightRequests: 1 }); await producer.connect()
   const admin = kafka.admin(); await admin.connect()

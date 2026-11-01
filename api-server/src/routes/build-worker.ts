@@ -15,7 +15,7 @@ router.post('/:id/source', async (req, res) => {
         const deployment = await Deployment.findById(req.params.id)
         if (!deployment || !['PENDING', 'BUILDING'].includes(deployment.status)) return res.sendStatus(409)
         const project = await Project.findById(deployment.projectId)
-        if (!project?.githubRepositoryId) return res.status(403).json({ error: 'Connect this repository to the LaunchPad GitHub App before deploying.' })
+        if (!project?.githubRepositoryId) return res.status(403).json({ error: 'Connect this repository to the DeployDock GitHub App before deploying.' })
         const source = repositoryFromURL(project.gitUrl)
         if (project.githubInstallationId) {
             const access = await repositoryAccess(await User.findById(project.userId), source.owner, source.repo)

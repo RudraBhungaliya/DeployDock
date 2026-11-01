@@ -42,7 +42,7 @@ export function workspaceDestination(value: string | null): string {
     /[\\\x00-\x1f]/.test(value)
   )
     return "/dashboard";
-  const url = new URL(value, "https://launchpad.invalid");
+  const url = new URL(value, "https://deploydock.invalid");
   return url.pathname === "/dashboard" ||
     url.pathname === "/launch" ||
     /^\/project\/[^/]+$/.test(url.pathname)
@@ -53,7 +53,7 @@ export function workspaceDestination(value: string | null): string {
 export function rememberDestination() {
   try {
     sessionStorage.setItem(
-      "launchpad:return-to",
+      "deploydock:return-to",
       workspaceDestination(window.location.pathname + window.location.search),
     );
   } catch {
@@ -63,8 +63,8 @@ export function rememberDestination() {
 
 export function consumeDestination() {
   try {
-    const value = sessionStorage.getItem("launchpad:return-to");
-    sessionStorage.removeItem("launchpad:return-to");
+    const value = sessionStorage.getItem("deploydock:return-to");
+    sessionStorage.removeItem("deploydock:return-to");
     return workspaceDestination(value);
   } catch {
     return "/dashboard";

@@ -28,7 +28,7 @@ export function validateResult(value: any, slug: string, deploymentId: string) {
         }
         if (m.target !== 'static') {
             const hash = createHash('sha256').update(deploymentId).digest('hex').slice(0, 12)
-            if (m.functionName !== `lp-${slug.slice(0, 20).replace(/-+$/, '')}-${hash}-web` ||
+            if (m.functionName !== `dd-${slug.slice(0, 20).replace(/-+$/, '')}-${hash}-web` ||
                 !/^[a-z]{2}(?:-gov)?-[a-z]+-\d$/.test(m.region)) throw new Error('Invalid Web Function routing metadata')
             let endpoint: URL
             try { endpoint = new URL(m.endpointUrl || '') } catch { throw new Error('Invalid Web Function endpoint') }

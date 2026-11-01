@@ -24,14 +24,14 @@ const app = express()
 const PORT = process.env.PORT || 9000
 
 const allowedOrigins = [
-    'https://launch-pad.dev',
+    'https://deploydock.dev',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:3201',
     'http://127.0.0.1:3201',
 ];
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://launch-pad.dev'
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://deploydock.dev'
 app.use(cors({
     origin: [FRONTEND_URL, ...allowedOrigins],
     credentials: true,

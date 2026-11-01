@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type HTTPCallback struct{ Client *http.Client }

@@ -166,7 +166,7 @@ test("expired API sessions notify the auth provider; aborted requests keep their
     fetch: async () => ({ status: 401 }),
   });
   await api.fetchWithAuth("/projects");
-  assert.deepEqual(events, ["launchpad:unauthorized"]);
+  assert.deepEqual(events, ["deploydock:unauthorized"]);
   const controller = new AbortController();
   controller.abort();
   const expected = new Error("cancelled");

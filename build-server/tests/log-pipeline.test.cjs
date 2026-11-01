@@ -36,10 +36,10 @@ function decodeBody(raw, headers) {
 
 async function main() {
   const suffix = String(process.pid)
-  const network = `launchpad-worker-smoke-${suffix}`
+  const network = `deploydock-worker-smoke-${suffix}`
   const names = { redis: `${network}-redis`, mongo: `${network}-mongo`, worker: `${network}-worker` }
   const tempRoot = fs.realpathSync(os.tmpdir())
-  const job = fs.mkdtempSync(path.join(tempRoot, 'launchpad-worker-smoke-'))
+  const job = fs.mkdtempSync(path.join(tempRoot, 'deploydock-worker-smoke-'))
   const fixture = path.join(job, 'repository'); fs.mkdirSync(fixture)
   const objects = new Map(); const sockets = []; let child; let database
   const s3 = http.createServer((req, res) => {
@@ -50,23 +50,23 @@ async function main() {
     })
   })
   try {
-    fs.writeFileSync(path.join(fixture, 'index.html'), '<html><body>launchpad-worker-ok</body></html>')
+    fs.writeFileSync(path.join(fixture, 'index.html'), '<html><body>deploydock-worker-ok</body></html>')
     fs.writeFileSync(path.join(fixture, 'package.json'), JSON.stringify({
-      name: 'launchpad-log-pipeline-fixture', version: '1.0.0', private: true,
+      name: 'deploydock-log-pipeline-fixture', version: '1.0.0', private: true,
       scripts: {
         postinstall: 'node -e "console.log(\'install stdout marker\'); console.error(\'install stderr marker\')"',
         build: 'node -e "console.log(\'build stdout marker\'); console.error(\'build stderr marker\')"'
       }
     }))
     fs.writeFileSync(path.join(fixture, '.env'), 'THIS_IS_A_TEST_PRIVATE_FILE=must-not-be-public\n')
-    for (const args of [['init', '--initial-branch=main'], ['add', '.'], ['-c', 'user.name=LaunchPad Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'Local static fixture']]) execFileSync('git', args, { cwd: fixture, stdio: 'ignore' })
+    for (const args of [['init', '--initial-branch=main'], ['add', '.'], ['-c', 'user.name=DeployDock Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'Local static fixture']]) execFileSync('git', args, { cwd: fixture, stdio: 'ignore' })
     const gitConfig = path.join(job, 'safe.gitconfig')
     fs.writeFileSync(gitConfig, '[safe]\n\tdirectory = /fixture/.git\n')
     const redisPort = await freePort(), mongoPort = await freePort(), socketPort = await freePort()
     docker('network', 'create', network)
     docker('run', '--detach', '--name', names.redis, '--network', network, '-p', `127.0.0.1:${redisPort}:6379`, process.env.REDIS_TEST_IMAGE || 'mirror.gcr.io/library/redis:7-alpine')
     docker('run', '--detach', '--name', names.mongo, '-p', `127.0.0.1:${mongoPort}:27017`, 'mongo:7')
-    const databaseURL = `mongodb://127.0.0.1:${mongoPort}/launchpad_worker_smoke`
+    const databaseURL = `mongodb://127.0.0.1:${mongoPort}/deploydock_worker_smoke`
     await mongoose.connect(databaseURL, { serverSelectionTimeoutMS: 20000 }); database = mongoose.connection
     const projectId = new mongoose.Types.ObjectId(), deploymentId = new mongoose.Types.ObjectId(), userId = new mongoose.Types.ObjectId()
     await database.collection('projects').insertOne({ _id: projectId, slug: 'worker-smoke', userId })
@@ -86,13 +86,13 @@ async function main() {
       AWS_REGION: 'us-east-1', AWS_BUCKET_NAME: 'test-assets', AWS_ACCESS_KEY_ID: 'test', AWS_SECRET_ACCESS_KEY: 'test', AWS_EC2_METADATA_DISABLED: 'true',
       AWS_ENDPOINT: `http://host.docker.internal:${s3.address().port}`, REDIS_URL: `redis://${names.redis}:6379`, USER_ENV_VARS: '{}',
       GIT_CONFIG_GLOBAL: '/test.gitconfig' }
-    const args = ['run', '--rm', '--name', names.worker, '--network', network, '-v', `${fixture}:/fixture:ro`, '-v', `${gitConfig}:/test.gitconfig:ro`, ...Object.keys(env).flatMap(key => ['--env', key]), process.env.BUILD_SERVER_IMAGE || 'launchpad-build-server:go']
+    const args = ['run', '--rm', '--name', names.worker, '--network', network, '-v', `${fixture}:/fixture:ro`, '-v', `${gitConfig}:/test.gitconfig:ro`, ...Object.keys(env).flatMap(key => ['--env', key]), process.env.BUILD_SERVER_IMAGE || 'deploydock-build-server:go']
     const worker = spawn('docker', args, { env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'] })
     let output = ''; for (const stream of [worker.stdout, worker.stderr]) stream.on('data', b => { output = (output + b).slice(-16000) })
     const code = await new Promise((resolve, reject) => { const timer = setTimeout(() => { worker.kill(); reject(new Error('Worker smoke test timed out')) }, 45000); worker.on('exit', code => { clearTimeout(timer); resolve(code) }); worker.on('error', reject) })
     assert.equal(code, 0, output)
     const prefix = `/test-assets/__outputs/worker-smoke/${deploymentId}`
-    assert.match(objects.get(`${prefix}/index.html`).toString(), /launchpad-worker-ok/)
+    assert.match(objects.get(`${prefix}/index.html`).toString(), /deploydock-worker-ok/)
     assert.equal(objects.has(`${prefix}/.env`), false)
     assert.equal(objects.has(`${prefix}/.git/config`), false)
     const result = JSON.parse(objects.get(`/test-assets/__deployments/worker-smoke/${deploymentId}/result.json`).toString())
@@ -126,7 +126,7 @@ async function main() {
     for (const name of Object.values(names)) { try { docker('rm', '--force', name) } catch {} }
     try { docker('network', 'rm', network) } catch {}
     const resolved = fs.realpathSync(job)
-    if (path.dirname(resolved) !== tempRoot || !path.basename(resolved).startsWith('launchpad-worker-smoke-')) throw new Error('Unsafe temporary cleanup path')
+    if (path.dirname(resolved) !== tempRoot || !path.basename(resolved).startsWith('deploydock-worker-smoke-')) throw new Error('Unsafe temporary cleanup path')
     fs.rmSync(resolved, { recursive: true, force: true })
   }
 }

@@ -4,11 +4,11 @@ const { createPreviewStore } = require("./preview-store.cjs");
 
 if (process.env.NODE_ENV === "production")
   throw new Error("UI preview is only available in local development.");
-const port = Number(process.env.LAUNCHPAD_PREVIEW_PORT || 3201);
+const port = Number(process.env.DEPLOYDOCK_PREVIEW_PORT || 3201);
 if (!Number.isInteger(port) || port < 1024 || port > 65535)
   throw new Error("Choose a local preview port between 1024 and 65535.");
 process.env.NODE_ENV = "development";
-process.env.LAUNCHPAD_UI_PREVIEW = "1";
+process.env.DEPLOYDOCK_UI_PREVIEW = "1";
 process.env.NEXT_PUBLIC_UI_PREVIEW = "1";
 process.env.NEXT_PUBLIC_API_URL = "/preview-api";
 process.env.NEXT_PUBLIC_LOGS_URL = `http://127.0.0.1:${port}`;
@@ -74,7 +74,7 @@ async function main() {
         "Content-Type": "text/html; charset=utf-8",
       });
       return res.end(
-        `<!doctype html><html lang="en"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LaunchPad preview</title><body style="margin:0;background:#080808;color:#f5f5f5;font:16px system-ui;display:grid;place-items:center;min-height:100vh"><main style="padding:32px;max-width:640px"><p style="color:#ff8a3d">LOCAL UI PREVIEW</p><h1>${project?.currentDeployment ? escapeHtml(slug) + " is ready." : "This sample site is not ready yet."}</h1><p>This page simulates a deployed website. No AWS resources were created.</p><a style="color:#ff8a3d" href="/project/${encodeURIComponent(slug)}">Back to deployment logs</a></main></body></html>`,
+        `<!doctype html><html lang="en"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DeployDock preview</title><body style="margin:0;background:#080808;color:#f5f5f5;font:16px system-ui;display:grid;place-items:center;min-height:100vh"><main style="padding:32px;max-width:640px"><p style="color:#ff8a3d">LOCAL UI PREVIEW</p><h1>${project?.currentDeployment ? escapeHtml(slug) + " is ready." : "This sample site is not ready yet."}</h1><p>This page simulates a deployed website. No AWS resources were created.</p><a style="color:#ff8a3d" href="/project/${encodeURIComponent(slug)}">Back to deployment logs</a></main></body></html>`,
       );
     }
     return handler(req, res);

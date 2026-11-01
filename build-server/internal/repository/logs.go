@@ -102,7 +102,7 @@ type Logger struct {
 }
 
 func NewLogger(project, deployment string, private []string, sink LogSink, out io.Writer) (*Logger, error) {
-	f, err := os.CreateTemp("", "launchpad-build-*.log")
+	f, err := os.CreateTemp("", "deploydock-build-*.log")
 	if err != nil {
 		return nil, err
 	}

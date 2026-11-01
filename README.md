@@ -1,4 +1,4 @@
-# LaunchPad
+# DeployDock
 
 > A distributed deployment platform. Deploy static sites, Next.js applications, and Node.js backends directly from GitHub with automated builds, live streaming logs, and custom HTTPS subdomains.
 
@@ -15,7 +15,7 @@
 - **Real-time build logs** including dependency installation, compilation, upload, and health checks
 - **Deployment history** with archived logs and the previous healthy deployment kept live after a failed build
 - **GitHub deployment reporting** with build status, live URLs, and links to logs
-- **Custom subdomains** for each project (`project-name.launch-pad.dev`)
+- **Custom subdomains** for each project (`project-name.deploydock.dev`)
 - **Wildcard SSL/TLS** issued and renewed by Caddy through Cloudflare DNS verification
 - **On-demand builds** using ephemeral AWS ECS Fargate tasks
 
@@ -74,9 +74,9 @@ Frontend and backend applications can also be separate projects, each with its o
 For a Node.js project with a static frontend, configure its frontend output folder. The proxy serves frontend GET/HEAD requests from S3 and keeps `/api` and `/api/...` on the Web Function:
 
 ```text
-my-app.launch-pad.dev/            -> S3 frontend
-my-app.launch-pad.dev/dashboard   -> S3 frontend / SPA fallback
-my-app.launch-pad.dev/api/hello   -> Node.js Web Function
+my-app.deploydock.dev/            -> S3 frontend
+my-app.deploydock.dev/dashboard   -> S3 frontend / SPA fallback
+my-app.deploydock.dev/api/hello   -> Node.js Web Function
 ```
 
 Next.js uses one project hostname for both pages and backend routes. Only `/_next/static/` assets are routed to S3; pages, API routes, Server Actions, public files, and image optimization reach the Next.js server.
@@ -258,7 +258,7 @@ Cacheable static responses can be served from Cloudflare's edge. A build switche
 Compose starts the VM services. Supply the following AWS resources through the root `.env`:
 
 - A **private S3 bucket** for static output, runtime packages, results, and archived logs
-- An **ECR repository** named `launchpad-build-worker`
+- An **ECR repository** named `deploydock-build-worker`
 - An **ECS cluster and Linux ARM64 Fargate task definition**, using the worker image and a container named `build-server`
 - An **ECS execution role** for image pulls and build-task logging
 - A **build task role** allowed to use the artifact bucket, manage Web Functions, and pass the runtime execution role
@@ -320,10 +320,16 @@ Install the app using **Only select repositories**. Its webhook is `https://api.
 
 ### Publish the Build Worker
 
-Authenticate an AWS CLI profile, then run the helper from the repository root in PowerShell:
+Authenticate an AWS CLI profile, then run the helper from the repository root:
 
+**macOS / Linux:**
+```bash
+./scripts/push-build-server.sh --profile DeployDock --region ap-south-1
+```
+
+**Windows (PowerShell):**
 ```powershell
-.\scripts\push-build-server.ps1 -Profile Launchpad -Region ap-south-1
+.\scripts\push-build-server.ps1 -Profile DeployDock -Region ap-south-1
 ```
 
 The script builds the Linux ARM64 image and pushes it to ECR. New Fargate tasks pull the updated `latest` image.
@@ -392,7 +398,7 @@ Live deployment checks have covered 15 application cases: Angular, React/Vite, V
 ## Project Structure
 
 ```text
-LaunchPad/
+DeployDock/
 ├── Frontend/                    # Public website, dashboard, deployment wizard
 ├── api-server/                  # API, GitHub integration, Kafka publisher and worker
 ├── build-server/                # Go build service and Fargate worker image
@@ -409,7 +415,8 @@ LaunchPad/
 ├── caddy/                       # Caddy image with Cloudflare DNS support
 ├── scripts/
 │   ├── mongo-init.js            # First-start database user setup
-│   └── push-build-server.ps1    # Build and publish the worker image
+│   ├── push-build-server.ps1    # Build and publish the worker image (Windows)
+│   └── push-build-server.sh     # Build and publish the worker image (macOS/Linux)
 ├── .env.example                 # Shared configuration template
 ├── docker-compose.yml           # VM services and persistent volumes
 ├── Caddyfile                    # Wildcard TLS and hostname routing

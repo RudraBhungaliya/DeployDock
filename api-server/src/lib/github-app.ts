@@ -16,7 +16,7 @@ export function appConfigured() {
 
 export function githubHeaders(token: string) {
     return { ...(token ? { Authorization: `Bearer ${token}` } : {}), Accept: 'application/vnd.github+json',
-        'User-Agent': 'LaunchPad', 'X-GitHub-Api-Version': '2022-11-28' }
+        'User-Agent': 'DeployDock', 'X-GitHub-Api-Version': '2022-11-28' }
 }
 
 export async function githubGet(path: string, token: string, params?: Record<string, unknown>) {
@@ -40,7 +40,7 @@ export function appJWT() {
 
 export async function appUserToken(user: IUser | null) {
     if (!user || user.githubTokenKind !== 'app' || !user.githubId) {
-        throw new GitHubAccessError('Sign in with the LaunchPad GitHub App, then connect the repositories you want to deploy.', 403)
+        throw new GitHubAccessError('Sign in with the DeployDock GitHub App, then connect the repositories you want to deploy.', 403)
     }
     const token = await githubAccessToken(user)
     if (!token) throw new GitHubAccessError('Please sign in with GitHub again.', 403)
@@ -91,10 +91,10 @@ export async function repositoryAccess(user: IUser | null, owner: string, name: 
     }
     if (!token) {
         if (repo.private === false) return { token: '', repo, installationId: undefined }
-        throw new GitHubAccessError('Sign in with the LaunchPad GitHub App, then connect this repository.')
+        throw new GitHubAccessError('Sign in with the DeployDock GitHub App, then connect this repository.')
     }
     if (installation.repository_selection !== 'selected' || installation.suspended_at) {
-        throw new GitHubAccessError('Choose Only select repositories in the LaunchPad GitHub App installation.')
+        throw new GitHubAccessError('Choose Only select repositories in the DeployDock GitHub App installation.')
     }
     const state = await GitHubInstallation.findOne({ installationId: installation.id })
     if (state?.deleted || state?.suspended) throw new GitHubAccessError('The GitHub App installation was removed or suspended. Reconnect it.')

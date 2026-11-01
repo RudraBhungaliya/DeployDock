@@ -11,11 +11,11 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 func TestProcessHelper(t *testing.T) {
-	if os.Getenv("LAUNCHPAD_PROCESS_HELPER") != "1" {
+	if os.Getenv("DEPLOYDOCK_PROCESS_HELPER") != "1" {
 		return
 	}
 	switch os.Args[len(os.Args)-1] {
@@ -32,7 +32,7 @@ func TestProcessHelper(t *testing.T) {
 	os.Exit(0)
 }
 func helper(mode string) domain.Command {
-	return domain.Command{Stage: "build", Name: os.Args[0], Args: []string{"-test.run=TestProcessHelper", "--", mode}, Env: append(os.Environ(), "LAUNCHPAD_PROCESS_HELPER=1"), Timeout: 3 * time.Second}
+	return domain.Command{Stage: "build", Name: os.Args[0], Args: []string{"-test.run=TestProcessHelper", "--", mode}, Env: append(os.Environ(), "DEPLOYDOCK_PROCESS_HELPER=1"), Timeout: 3 * time.Second}
 }
 func TestProcessStreamsBeyondExecBuffer(t *testing.T) {
 	var bytes int
@@ -80,7 +80,7 @@ func TestCommandFailuresAndCancellation(t *testing.T) {
 	if err := p.Run(ctx, c); err == nil {
 		t.Fatal("cancelled command started")
 	}
-	c.Name = "launchpad-command-that-does-not-exist"
+	c.Name = "deploydock-command-that-does-not-exist"
 	if err := p.Run(context.Background(), c); err == nil {
 		t.Fatal("missing executable accepted")
 	}

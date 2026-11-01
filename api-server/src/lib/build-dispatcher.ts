@@ -29,7 +29,7 @@ export async function dispatchBuild(id: string, heartbeat: () => Promise<void>):
     } catch (error: any) {
         if (error instanceof BuildConfigurationError || error.response?.status === 403) {
             await Deployment.updateOne({ _id: id, status: 'PENDING' }, { $set: { status: 'FAILED',
-                failureReason: error instanceof BuildConfigurationError ? error.message : 'Reconnect this repository to the LaunchPad GitHub App before deploying.' } })
+                failureReason: error instanceof BuildConfigurationError ? error.message : 'Reconnect this repository to the DeployDock GitHub App before deploying.' } })
             return 'done'
         }
         if (!(error instanceof BuildCapacityError)) console.error('Build dispatch temporarily unavailable; retaining queued deployment', id)

@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"launchpad/build-server/internal/handler"
+	"deploydock/build-server/internal/handler"
 )
 
 func main() {

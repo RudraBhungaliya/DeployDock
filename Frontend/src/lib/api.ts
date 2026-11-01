@@ -3,7 +3,7 @@ export const API_BASE =
 export const LOGS_URL =
   process.env.NEXT_PUBLIC_LOGS_URL || "http://localhost:9002";
 export const APP_DOMAIN =
-  process.env.NEXT_PUBLIC_APP_DOMAIN || "launch-pad.dev";
+  process.env.NEXT_PUBLIC_APP_DOMAIN || "deploydock.dev";
 export const UI_PREVIEW = process.env.NEXT_PUBLIC_UI_PREVIEW === "1";
 
 export type User = {
@@ -113,7 +113,7 @@ export async function fetchWithAuth(path: string, options: RequestInit = {}) {
       },
     });
     if (response.status === 401 && token())
-      window.dispatchEvent(new Event("launchpad:unauthorized"));
+      window.dispatchEvent(new Event("deploydock:unauthorized"));
     return response;
   } catch (error) {
     if (options.signal?.aborted) throw error;

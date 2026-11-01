@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 //go:embed templates/native.cjs
@@ -109,10 +109,10 @@ func webPackage(source string, config any) (string, error) {
 		return "", err
 	}
 	b, _ := json.Marshal(config)
-	if err = os.WriteFile(filepath.Join(root, "index.js"), []byte("require('./launchpad.cjs').start("+string(b)+").catch(() => { console.error('Application startup failed; check the entry point and production dependencies'); process.exit(1); });\n"), 0644); err != nil {
+	if err = os.WriteFile(filepath.Join(root, "index.js"), []byte("require('./deploydock.cjs').start("+string(b)+").catch(() => { console.error('Application startup failed; check the entry point and production dependencies'); process.exit(1); });\n"), 0644); err != nil {
 		return "", err
 	}
-	err = os.WriteFile(filepath.Join(root, "launchpad.cjs"), []byte(nativeBootstrap), 0644)
+	err = os.WriteFile(filepath.Join(root, "deploydock.cjs"), []byte(nativeBootstrap), 0644)
 	return root, err
 }
 
@@ -215,7 +215,7 @@ func (a NextWeb) Build(ctx context.Context, r domain.Request, source string) (do
 	original, backup := "", ""
 	for _, name := range []string{"next.config.js", "next.config.mjs", "next.config.ts"} {
 		if _, err := os.Stat(filepath.Join(source, name)); err == nil {
-			original, backup = name, "launchpad.original."+name
+			original, backup = name, "deploydock.original."+name
 			if err = os.Rename(filepath.Join(source, original), filepath.Join(source, backup)); err != nil {
 				return domain.Package{}, err
 			}

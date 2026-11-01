@@ -28,7 +28,7 @@ test('watch paths respect directory boundaries and include lockfiles and shared 
 })
 
 test('legacy OAuth tokens cannot be used as a private-repository fallback', async () => {
-  await assert.rejects(appUserToken({ githubToken: 'legacy-token' }), /Sign in with the LaunchPad GitHub App/)
+  await assert.rejects(appUserToken({ githubToken: 'legacy-token' }), /Sign in with the DeployDock GitHub App/)
   assert.deepEqual(repositoryFromURL('https://github.com/owner/my.repo.git'), { owner: 'owner', repo: 'my.repo' })
   for (const url of ['http://github.com/o/r', 'https://github.com/o/r/tree/main', 'https://github.com/o/r?token=x', 'https://evil.test/o/r']) assert.throws(() => repositoryFromURL(url))
 })

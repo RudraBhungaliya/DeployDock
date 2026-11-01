@@ -5,7 +5,7 @@ const { Deployment } = require('../dist/src/models/Deployment')
 const { Project } = require('../dist/src/models/Project')
 const { createHash } = require('node:crypto')
 
-function result(id = 'deployment') { return { status: 'SUCCESS', manifest: { version: 2, projectId: 'demo', deploymentId: id, target: 'nextjs-web', assetPrefix: `__outputs/demo/${id}`, region: 'ap-south-1', functionName: `lp-demo-${createHash('sha256').update(id).digest('hex').slice(0, 12)}-web`, endpointUrl: 'https://abcd.b7t.lambda-web.ap-south-1.on.aws', staticPrefixes: ['/_next/static/'] } } }
+function result(id = 'deployment') { return { status: 'SUCCESS', manifest: { version: 2, projectId: 'demo', deploymentId: id, target: 'nextjs-web', assetPrefix: `__outputs/demo/${id}`, region: 'ap-south-1', functionName: `dd-demo-${createHash('sha256').update(id).digest('hex').slice(0, 12)}-web`, endpointUrl: 'https://abcd.b7t.lambda-web.ap-south-1.on.aws', staticPrefixes: ['/_next/static/'] } } }
 test('runtime manifests cannot select a different project or asset prefix', () => {
   assert.equal(validateResult(result(), 'demo', 'deployment').status, 'SUCCESS')
   assert.throws(() => validateResult(result(), 'another-project', 'deployment'))

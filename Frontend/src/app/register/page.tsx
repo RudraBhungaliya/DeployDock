@@ -6,7 +6,7 @@ export default function RegisterPage() {
   return (
     <AuthShell
       title="Create your workspace"
-      subtitle="Connect GitHub to create your LaunchPad account and choose the repositories you want to deploy."
+      subtitle="Connect GitHub to create your DeployDock account and choose the repositories you want to deploy."
       footer={
         <>
           Already have a workspace?{" "}

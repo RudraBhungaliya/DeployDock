@@ -7,7 +7,7 @@ import mongoose, { Schema } from 'mongoose'
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379'
 const SOCKET_PORT = parseInt(process.env.SOCKET_PORT || '9002')
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret'
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/launchpad'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/deploydock'
 
 // Connect to MongoDB
 mongoose.connect(MONGODB_URI)

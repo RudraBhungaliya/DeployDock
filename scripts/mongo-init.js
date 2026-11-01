@@ -1,6 +1,6 @@
-const app = db.getSiblingDB('launchpad');
+const app = db.getSiblingDB('deploydock');
 app.createUser({
-    user: 'launchpad',
+    user: 'deploydock',
     pwd: process.env.MONGO_APP_PASSWORD,
-    roles: [{ role: 'readWrite', db: 'launchpad' }],
+    roles: [{ role: 'readWrite', db: 'deploydock' }],
 });

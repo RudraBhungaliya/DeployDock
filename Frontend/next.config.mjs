@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 // Reuse the repository-level environment file so the dashboard and the API
 // server agree on hostnames during local development.
-const uiPreview = process.env.LAUNCHPAD_UI_PREVIEW === "1";
+const uiPreview = process.env.DEPLOYDOCK_UI_PREVIEW === "1";
 if (
   process.env.NODE_ENV === "production" &&
   (uiPreview || process.env.NEXT_PUBLIC_UI_PREVIEW === "1")

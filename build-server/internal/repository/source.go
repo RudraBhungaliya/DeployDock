@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type Git struct{ Runner domain.Runner }
@@ -42,7 +42,7 @@ func (g Git) Clone(ctx context.Context, r domain.Request, dest string) error {
 		}
 		token = credential.Token
 	}
-	dir, err := os.MkdirTemp("", "launchpad-git-")
+	dir, err := os.MkdirTemp("", "deploydock-git-")
 	if err != nil {
 		return err
 	}

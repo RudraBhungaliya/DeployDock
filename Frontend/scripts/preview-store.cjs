@@ -42,7 +42,7 @@ function createPreviewStore({
     const project = {
       _id: randomUUID(),
       slug,
-      gitUrl: `https://github.com/launchpad-preview/${slug}`,
+      gitUrl: `https://github.com/deploydock-preview/${slug}`,
       branch: "main",
       sourceDir,
       createdAt,
@@ -87,7 +87,7 @@ function createPreviewStore({
   projects.push({
     _id: randomUUID(),
     slug: "weekend-experiment",
-    gitUrl: "https://github.com/launchpad-preview/weekend-experiment",
+    gitUrl: "https://github.com/deploydock-preview/weekend-experiment",
     branch: "main",
     createdAt: new Date().toISOString(),
   });
@@ -175,22 +175,22 @@ function createPreviewStore({
         repos: [
           {
             name: "studio-portfolio",
-            fullName: "launchpad-preview/studio-portfolio",
-            gitUrl: "https://github.com/launchpad-preview/studio-portfolio",
+            fullName: "deploydock-preview/studio-portfolio",
+            gitUrl: "https://github.com/deploydock-preview/studio-portfolio",
             defaultBranch: "main",
             private: true,
           },
           {
             name: "project-docs",
-            fullName: "launchpad-preview/project-docs",
-            gitUrl: "https://github.com/launchpad-preview/project-docs",
+            fullName: "deploydock-preview/project-docs",
+            gitUrl: "https://github.com/deploydock-preview/project-docs",
             defaultBranch: "main",
             private: false,
           },
           {
             name: "weekend-experiment",
-            fullName: "launchpad-preview/weekend-experiment",
-            gitUrl: "https://github.com/launchpad-preview/weekend-experiment",
+            fullName: "deploydock-preview/weekend-experiment",
+            gitUrl: "https://github.com/deploydock-preview/weekend-experiment",
             defaultBranch: "main",
             private: false,
           },

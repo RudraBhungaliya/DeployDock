@@ -8,9 +8,9 @@ import (
 	"runtime"
 	"time"
 
-	"launchpad/build-server/internal/adapter"
-	"launchpad/build-server/internal/domain"
-	"launchpad/build-server/internal/repository"
+	"deploydock/build-server/internal/adapter"
+	"deploydock/build-server/internal/domain"
+	"deploydock/build-server/internal/repository"
 )
 
 type Build struct {

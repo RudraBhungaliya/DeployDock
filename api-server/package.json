@@ -1,7 +1,7 @@
 {
   "name": "api-server",
   "version": "1.0.0",
-  "description": "LaunchPad API, GitHub App integration and Kafka deployment dispatch",
+  "description": "DeployDock API, GitHub App integration and Kafka deployment dispatch",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -32,5 +32,8 @@
     "@types/node": "^22.10.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
   }
 }

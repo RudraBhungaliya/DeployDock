@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type noRunner struct{}

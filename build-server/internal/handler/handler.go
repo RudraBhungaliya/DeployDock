@@ -9,10 +9,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/lambdaweb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 
-	"launchpad/build-server/internal/adapter"
-	appconfig "launchpad/build-server/internal/config"
-	"launchpad/build-server/internal/repository"
-	"launchpad/build-server/internal/service"
+	"deploydock/build-server/internal/adapter"
+	appconfig "deploydock/build-server/internal/config"
+	"deploydock/build-server/internal/repository"
+	"deploydock/build-server/internal/service"
 )
 
 // Run handles one deployment job. ECS/Docker owns scheduling; this worker does

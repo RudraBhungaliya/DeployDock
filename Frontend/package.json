@@ -1,8 +1,8 @@
 {
-  "name": "launchpad-web",
+  "name": "deploydock-web",
   "version": "0.1.0",
   "private": true,
-  "description": "LaunchPad dashboard and marketing site",
+  "description": "DeployDock dashboard and marketing site",
   "scripts": {
     "dev": "next dev",
     "preview": "node scripts/preview.cjs",

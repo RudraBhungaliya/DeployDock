@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type Static struct{ Runner domain.Runner }

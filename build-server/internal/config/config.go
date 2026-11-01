@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 func Load() (domain.Request, error) {

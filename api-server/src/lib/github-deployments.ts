@@ -6,11 +6,11 @@ import { appConfigured, deploymentReportingToken, githubHeaders, repositoryFromU
 
 type ReportState = 'queued' | 'in_progress' | 'success' | 'failure' | 'inactive'
 const descriptions: Record<ReportState, string> = {
-    queued: 'LaunchPad: queued for a build',
-    in_progress: 'LaunchPad: build in progress',
-    success: 'LaunchPad: deployment is live',
-    failure: 'LaunchPad: build failed; the previous live site is unchanged',
-    inactive: 'LaunchPad: superseded by another deployment',
+    queued: 'DeployDock: queued for a build',
+    in_progress: 'DeployDock: build in progress',
+    success: 'DeployDock: deployment is live',
+    failure: 'DeployDock: build failed; the previous live site is unchanged',
+    inactive: 'DeployDock: superseded by another deployment',
 }
 
 // Saved with the build's outbox record, without making any GitHub requests.
@@ -19,13 +19,13 @@ export function githubReportFor(project: any, deploymentId: string): IGitHubRepo
     if (process.env.GITHUB_DEPLOYMENTS_ENABLED === 'false' || !project.githubInstallationId || !project.githubRepositoryId) return
     try {
         const source = repositoryFromURL(project.gitUrl)
-        const frontend = new URL(process.env.FRONTEND_URL || 'https://launch-pad.dev')
+        const frontend = new URL(process.env.FRONTEND_URL || 'https://deploydock.dev')
         if (!['http:', 'https:'].includes(frontend.protocol)) throw new Error('Invalid frontend URL')
         const log = new URL(`/project/${encodeURIComponent(project.slug)}`, frontend)
         log.searchParams.set('deployment', deploymentId)
         return { installationId: project.githubInstallationId, repositoryId: project.githubRepositoryId,
-            ...source, environment: `LaunchPad / ${project.slug}`, logUrl: log.href,
-            siteUrl: new URL(`https://${project.slug}.${process.env.BASE_DOMAIN || 'launch-pad.dev'}`).href,
+            ...source, environment: `DeployDock / ${project.slug}`, logUrl: log.href,
+            siteUrl: new URL(`https://${project.slug}.${process.env.BASE_DOMAIN || 'deploydock.dev'}`).href,
             sentStates: [], attempts: 0, done: false, nextAttemptAt: new Date() }
     } catch { console.error('GitHub deployment reporting configuration is invalid; the build can still proceed') }
 }
@@ -83,7 +83,7 @@ export async function syncGitHubReport(deployment: any) {
                         environment: report.environment, task: 'deploy', per_page: 100, page } })
                     if (!Array.isArray(data)) throw new Error('Invalid GitHub deployment listing')
                     const match = data.find(item => item.sha === deployment.commitHash &&
-                        remotePayload(item.payload)?.launchpadDeploymentId === String(deployment._id))
+                        remotePayload(item.payload)?.deploydockDeploymentId === String(deployment._id))
                     if (match) {
                         if (!Number.isSafeInteger(match.id) || match.id <= 0) throw new Error('Invalid GitHub deployment ID')
                         await save({ remoteId: match.id }); break
@@ -96,8 +96,8 @@ export async function syncGitHubReport(deployment: any) {
                 await save({ createAttempted: true })
                 const { data } = await axios.post(prefix, { ref: deployment.commitHash, environment: report.environment,
                     auto_merge: false, required_contexts: [], production_environment: true, transient_environment: false,
-                    description: `LaunchPad deployment for ${project.slug}`,
-                    payload: { launchpadDeploymentId: String(deployment._id), projectSlug: project.slug } }, config)
+                    description: `DeployDock deployment for ${project.slug}`,
+                    payload: { deploydockDeploymentId: String(deployment._id), projectSlug: project.slug } }, config)
                 if (!Number.isSafeInteger(data.id) || data.id <= 0) throw new Error('Invalid GitHub deployment ID')
                 await save({ remoteId: data.id })
             }

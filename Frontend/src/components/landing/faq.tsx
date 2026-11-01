@@ -15,17 +15,17 @@ const items = [
   {
     question: "How does a monorepo work?",
     answer:
-      "After picking a repository and branch, the folder picker walks the tree. Choose apps/web and LaunchPad builds only that directory. Install command, build command and output path are all resolved relative to it.",
+      "After picking a repository and branch, the folder picker walks the tree. Choose apps/web and DeployDock builds only that directory. Install command, build command and output path are all resolved relative to it.",
   },
   {
     question: "Can I deploy a private repository?",
     answer:
-      "Yes, when your connected GitHub account can read it. LaunchPad uses that connection to list and inspect repositories and clone the selected source during a build. You can also paste a public GitHub repository URL.",
+      "Yes, when your connected GitHub account can read it. DeployDock uses that connection to list and inspect repositories and clone the selected source during a build. You can also paste a public GitHub repository URL.",
   },
   {
     question: "Where does the built site live?",
     answer:
-      "Static assets are stored in S3. Next.js server rendering and API routes run on demand in AWS Lambda. Your project receives a TLS-secured LaunchPad subdomain once its first deployment is ready.",
+      "Static assets are stored in S3. Next.js server rendering and API routes run on demand in AWS Lambda. Your project receives a TLS-secured DeployDock subdomain once its first deployment is ready.",
   },
   {
     question: "What happens when a build fails?",
@@ -35,7 +35,7 @@ const items = [
   {
     question: "Do I need a custom domain?",
     answer:
-      "No. Every project gets a LaunchPad subdomain when its first build succeeds. Connecting your own domain is not currently available in the dashboard.",
+      "No. Every project gets a DeployDock subdomain when its first build succeeds. Connecting your own domain is not currently available in the dashboard.",
   },
 ];
 

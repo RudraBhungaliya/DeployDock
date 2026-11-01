@@ -5,7 +5,7 @@ const { Readable } = require('node:stream')
 const { createApp } = require('../dist/app')
 const { viewerHeaders } = require('../dist/web')
 
-const runtime = { target: 'nextjs-web', region: 'ap-south-1', functionName: 'lp-demo-deployment-web', endpointUrl: 'https://abcd.b7t.lambda-web.ap-south-1.on.aws', staticPrefixes: ['/_next/static/'] }
+const runtime = { target: 'nextjs-web', region: 'ap-south-1', functionName: 'dd-demo-deployment-web', endpointUrl: 'https://abcd.b7t.lambda-web.ap-south-1.on.aws', staticPrefixes: ['/_next/static/'] }
 function setup(t, overrides = {}) {
   const calls = { assets: [], forwards: [] }
   const deps = {
@@ -22,7 +22,7 @@ function setup(t, overrides = {}) {
   async function request(path, options = {}) {
     if (!server.listening) await new Promise(resolve => server.once('listening', resolve))
     return new Promise((resolve, reject) => {
-      const req = http.request({ hostname: '127.0.0.1', port: server.address().port, path, method: options.method || 'GET', headers: { host: 'demo.launch-pad.dev', ...options.headers } }, res => {
+      const req = http.request({ hostname: '127.0.0.1', port: server.address().port, path, method: options.method || 'GET', headers: { host: 'demo.deploydock.dev', ...options.headers } }, res => {
         const chunks = []; res.on('data', c => chunks.push(c)); res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body: Buffer.concat(chunks) }))
       }); req.on('error', reject); req.end(options.body)
     })
@@ -38,14 +38,14 @@ test('Next pages, APIs, RSC, images and public files reach one native HTTP serve
 test('POST streams original bytes and safely forwards viewer auth, cookies and action origin', async t => {
   const { request, calls } = setup(t)
   const body = Buffer.from('body 🌏 & data')
-  const res = await request('/api/echo', { method: 'POST', body, headers: { authorization: 'Bearer viewer', 'x-launchpad-authorization': 'spoofed', origin: 'https://demo.launch-pad.dev', 'x-forwarded-proto': 'https', cookie: 'session=1; app=2', 'x-amz-security-token': 'spoofed' } })
+  const res = await request('/api/echo', { method: 'POST', body, headers: { authorization: 'Bearer viewer', 'x-deploydock-authorization': 'spoofed', origin: 'https://demo.deploydock.dev', 'x-forwarded-proto': 'https', cookie: 'session=1; app=2', 'x-amz-security-token': 'spoofed' } })
   assert.deepEqual(calls.forwards[0].body, body)
   const headers = calls.forwards[0].headers
-  assert.equal(headers['x-launchpad-authorization'], 'Bearer viewer')
+  assert.equal(headers['x-deploydock-authorization'], 'Bearer viewer')
   assert.equal(headers.authorization, undefined)
   assert.equal(headers['x-amz-security-token'], undefined)
-  assert.equal(headers['x-forwarded-host'], 'demo.launch-pad.dev')
-  assert.equal(headers.origin, 'https://demo.launch-pad.dev')
+  assert.equal(headers['x-forwarded-host'], 'demo.deploydock.dev')
+  assert.equal(headers.origin, 'https://demo.deploydock.dev')
   assert.equal(headers['x-amz-content-sha256'], 'UNSIGNED-PAYLOAD')
   assert.equal(res.headers['set-cookie'].length, 2)
 })
@@ -93,6 +93,6 @@ test('routing refuses arbitrary origins, malformed paths and internal health rou
   assert.equal((await request('/api/hello')).status, 503)
   assert.equal((await request('/%2e%2e/private')).status, 400)
   assert.equal((await request('/%zz')).status, 400)
-  assert.equal((await request('/.launchpad/health')).status, 404)
+  assert.equal((await request('/.deploydock/health')).status, 404)
   assert.equal(calls.forwards.length, 0)
 })

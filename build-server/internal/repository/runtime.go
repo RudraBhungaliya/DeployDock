@@ -21,7 +21,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/lambdaweb"
 	web "github.com/aws/aws-sdk-go-v2/service/lambdaweb/types"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type WebAPI interface {
@@ -43,7 +43,7 @@ func FunctionName(project, deployment string) string {
 		project = project[:20]
 	}
 	h := sha256.Sum256([]byte(deployment))
-	return "lp-" + strings.TrimRight(project, "-") + "-" + hex.EncodeToString(h[:6]) + "-web"
+	return "dd-" + strings.TrimRight(project, "-") + "-" + hex.EncodeToString(h[:6]) + "-web"
 }
 func ZipDirectory(root, dest string, maxBytes int64) error {
 	f, err := os.Create(dest)
@@ -117,7 +117,7 @@ func (w WebRuntime) health(ctx context.Context, r domain.Request, endpoint strin
 	if client == nil {
 		client = &http.Client{Timeout: 40 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	}
-	for _, path := range []string{"/.launchpad/health", "/"} {
+	for _, path := range []string{"/.deploydock/health", "/"} {
 		req, err := http.NewRequestWithContext(ctx, "GET", strings.TrimRight(endpoint, "/")+path, nil)
 		if err != nil {
 			return err
@@ -125,7 +125,7 @@ func (w WebRuntime) health(ctx context.Context, r domain.Request, endpoint strin
 		hash := sha256.Sum256(nil)
 		payload := hex.EncodeToString(hash[:])
 		req.Header.Set("X-Amz-Content-Sha256", payload)
-		req.Header.Set("X-Forwarded-Host", r.ProjectID+".launch-pad.dev")
+		req.Header.Set("X-Forwarded-Host", r.ProjectID+".deploydock.dev")
 		req.Header.Set("X-Forwarded-Proto", "https")
 		credentials, err := w.Credentials.Retrieve(ctx)
 		if err != nil {
@@ -140,7 +140,7 @@ func (w WebRuntime) health(ctx context.Context, r domain.Request, endpoint strin
 		}
 		io.Copy(io.Discard, io.LimitReader(response.Body, 1024*1024))
 		response.Body.Close()
-		if response.StatusCode >= 500 || path == "/.launchpad/health" && response.StatusCode != 200 {
+		if response.StatusCode >= 500 || path == "/.deploydock/health" && response.StatusCode != 200 {
 			return fmt.Errorf("web runtime health returned HTTP %d", response.StatusCode)
 		}
 	}
@@ -153,7 +153,7 @@ func (w WebRuntime) Deploy(ctx context.Context, r domain.Request, p domain.Packa
 	if r.Architecture != "arm64" {
 		return manifest, fmt.Errorf("native Web Functions require ARM64")
 	}
-	file, err := os.CreateTemp("", "launchpad-web-*.zip")
+	file, err := os.CreateTemp("", "deploydock-web-*.zip")
 	if err != nil {
 		return manifest, err
 	}
@@ -176,10 +176,10 @@ func (w WebRuntime) Deploy(ctx context.Context, r domain.Request, p domain.Packa
 	env["NODE_ENV"] = "production"
 	_, err = w.Client.CreateWebFunction(ctx, &lambdaweb.CreateWebFunctionInput{
 		FunctionName: aws.String(function),
-		Tags:         map[string]string{"Application": "LaunchPad", "Project": r.ProjectID, "Deployment": r.DeploymentID},
+		Tags:         map[string]string{"Application": "DeployDock", "Project": r.ProjectID, "Deployment": r.DeploymentID},
 		RevisionConfig: &web.RevisionConfig{
 			BuildConfig:   &web.BuildConfig{CodeConfig: &web.CodeConfig{S3Object: &web.S3Object{Bucket: aws.String(r.Bucket), Key: aws.String(key)}}, RuntimeConfig: &web.RuntimeConfig{Runtime: aws.String("nodejs24.x")}},
-			ServiceConfig: &web.ServiceConfig{ExecutionRoleArn: aws.String(r.WebRoleARN), TimeoutSeconds: aws.Int32(30), MaxConcurrencyPerEnvironment: aws.Int32(16), EnvironmentVariables: env, TelemetryConfig: &web.TelemetryConfig{LoggingConfig: &web.LoggingConfig{LogGroup: aws.String("/launchpad/web")}}},
+			ServiceConfig: &web.ServiceConfig{ExecutionRoleArn: aws.String(r.WebRoleARN), TimeoutSeconds: aws.Int32(30), MaxConcurrencyPerEnvironment: aws.Int32(16), EnvironmentVariables: env, TelemetryConfig: &web.TelemetryConfig{LoggingConfig: &web.LoggingConfig{LogGroup: aws.String("/deploydock/web")}}},
 		},
 		// New endpoint per build; publishing the manifest is the health gate.
 		EndpointConfig: &web.EndpointConfig{EndpointName: aws.String("live"), EndpointType: web.EndpointTypeHomeRegion, AuthType: web.AuthTypeIamAuth, AutoDeploymentMode: web.AutoDeploymentModeLatestRevision},

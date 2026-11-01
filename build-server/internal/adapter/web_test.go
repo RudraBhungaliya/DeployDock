@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 func TestNodeDetectionAndProductionEntry(t *testing.T) {
@@ -62,7 +62,7 @@ func TestNativeServerStartupPreservesHTTPAndBindsLambdaPort(t *testing.T) {
 	client := &http.Client{Timeout: time.Second}
 	var response *http.Response
 	for deadline := time.Now().Add(8 * time.Second); time.Now().Before(deadline); time.Sleep(25 * time.Millisecond) {
-		response, err = client.Get("http://" + addr + "/.launchpad/health")
+		response, err = client.Get("http://" + addr + "/.deploydock/health")
 		if err == nil {
 			break
 		}
@@ -72,18 +72,18 @@ func TestNativeServerStartupPreservesHTTPAndBindsLambdaPort(t *testing.T) {
 	}
 	response.Body.Close()
 	req, _ := http.NewRequest("POST", "http://"+addr+"/echo?q=a%20b", strings.NewReader("hello"))
-	req.Header.Set("X-Launchpad-Authorization", "Bearer viewer")
-	req.Header.Set("X-Forwarded-Host", "demo.launch-pad.dev")
+	req.Header.Set("X-DeployDock-Authorization", "Bearer viewer")
+	req.Header.Set("X-Forwarded-Host", "demo.deploydock.dev")
 	response, err = client.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer response.Body.Close()
 	body, _ := io.ReadAll(response.Body)
-	if !strings.Contains(string(body), `"authorization":"Bearer viewer"`) || !strings.Contains(string(body), `"host":"demo.launch-pad.dev"`) || len(response.Header.Values("Set-Cookie")) != 2 {
+	if !strings.Contains(string(body), `"authorization":"Bearer viewer"`) || !strings.Contains(string(body), `"host":"demo.deploydock.dev"`) || len(response.Header.Values("Set-Cookie")) != 2 {
 		t.Fatal(string(body))
 	}
-	if !strings.Contains(string(body), `"Authorization","Bearer viewer"`) || strings.Contains(string(body), "X-Launchpad-Authorization") {
+	if !strings.Contains(string(body), `"Authorization","Bearer viewer"`) || strings.Contains(string(body), "X-DeployDock-Authorization") {
 		t.Fatal("raw HTTP headers did not restore application authentication")
 	}
 }

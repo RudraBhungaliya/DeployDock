@@ -67,7 +67,7 @@ function UrlVisual() {
     <div className="space-y-2">
       <div className="flex items-center gap-2 rounded-lg border border-white/[0.08] bg-black/40 px-2.5 py-2 font-mono text-[11px] text-dim">
         <Lock className="h-3 w-3 text-mint" />
-        <span className="truncate">storefront.launch-pad.dev</span>
+        <span className="truncate">storefront.deploydock.dev</span>
       </div>
       <div className="flex items-center gap-2 rounded-lg border border-white/[0.07] bg-black/30 px-2.5 py-2 font-mono text-[10px] text-faint">
         <Globe2 className="h-3 w-3" />

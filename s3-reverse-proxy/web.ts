@@ -13,13 +13,13 @@ export function viewerHeaders(req: Request, hostname: string) {
     const headers: Record<string, string> = {}
     const connection = new Set((req.headers.connection || '').toLowerCase().split(',').map(value => value.trim()))
     for (const [key, value] of Object.entries(req.headers)) {
-        if (value !== undefined && !hopHeaders.has(key) && !connection.has(key) && !key.startsWith('x-amz-') && !key.startsWith('x-launchpad-') && !['authorization', 'host', 'forwarded', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-for'].includes(key)) headers[key] = Array.isArray(value) ? value.join(', ') : value
+        if (value !== undefined && !hopHeaders.has(key) && !connection.has(key) && !key.startsWith('x-amz-') && !key.startsWith('x-deploydock-') && !['authorization', 'host', 'forwarded', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-for'].includes(key)) headers[key] = Array.isArray(value) ? value.join(', ') : value
     }
     headers.host = hostname
     headers['x-forwarded-host'] = req.headers.host || req.hostname
     headers['x-forwarded-proto'] = req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http'
     headers['x-forwarded-for'] = req.socket.remoteAddress || ''
-    if (req.headers.authorization) headers['x-launchpad-authorization'] = req.headers.authorization
+    if (req.headers.authorization) headers['x-deploydock-authorization'] = req.headers.authorization
     // Required by Lambda IAM auth. TLS protects the streamed request body.
     headers['x-amz-content-sha256'] = 'UNSIGNED-PAYLOAD'
     return headers

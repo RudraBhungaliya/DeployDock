@@ -11,7 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type Process struct {

@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"launchpad/build-server/internal/domain"
-	"launchpad/build-server/internal/repository"
+	"deploydock/build-server/internal/domain"
+	"deploydock/build-server/internal/repository"
 )
 
 type Registry struct{ adapters map[string]domain.Adapter }

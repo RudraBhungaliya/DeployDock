@@ -26,24 +26,24 @@ const emit = http.Server.prototype.emit;
 http.Server.prototype.emit = function (event, ...args) {
   if (event === 'request') {
     const [req, res] = args;
-    // These headers are always overwritten by LaunchPad's IAM-signing proxy.
+    // These headers are always overwritten by DeployDock's IAM-signing proxy.
     // IAM removes its own Authorization header before this HTTP server sees it.
-    const authorization = req.headers['x-launchpad-authorization'];
+    const authorization = req.headers['x-deploydock-authorization'];
     delete req.headers.authorization;
     if (typeof authorization === 'string') req.headers.authorization = authorization;
-    delete req.headers['x-launchpad-authorization'];
+    delete req.headers['x-deploydock-authorization'];
     const host = req.headers['x-forwarded-host'];
     if (typeof host === 'string') req.headers.host = host;
     // Fetch-based servers (including Hono) construct Headers from rawHeaders.
     // Keep the raw and normalized Node representations in sync.
     const raw = [];
     for (let i = 0; i < req.rawHeaders.length; i += 2) {
-      if (!['authorization', 'x-launchpad-authorization', 'host'].includes(req.rawHeaders[i].toLowerCase())) raw.push(req.rawHeaders[i], req.rawHeaders[i + 1]);
+      if (!['authorization', 'x-deploydock-authorization', 'host'].includes(req.rawHeaders[i].toLowerCase())) raw.push(req.rawHeaders[i], req.rawHeaders[i + 1]);
     }
     if (req.headers.host) raw.push('Host', req.headers.host);
     if (typeof authorization === 'string') raw.push('Authorization', authorization);
     req.rawHeaders = raw;
-    if (req.url === '/.launchpad/health') {
+    if (req.url === '/.deploydock/health') {
       res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
       res.end('{"status":"ready"}');
       return true;
@@ -57,7 +57,7 @@ async function start(config) {
   if (config.next) {
     // Next writes ISR pages, data and optimized images below .next. Code is
     // read-only in Lambda, so only that mutable tree is copied to /tmp.
-    const writable = path.join(process.env.TMPDIR || '/tmp', 'launchpad-next');
+    const writable = path.join(process.env.TMPDIR || '/tmp', 'deploydock-next');
     fs.mkdirSync(writable, { recursive: true });
     for (const name of fs.readdirSync(app)) {
       const source = path.join(app, name);

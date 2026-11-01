@@ -19,12 +19,12 @@ const app = createApp({
         return { slug, deploymentId: project.currentDeployment.toString(), runtime: deployment?.runtime }
     },
     async asset(key) {
-        const output = await s3.send(new GetObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME || 'launchpad-assets', Key: key }), { abortSignal: AbortSignal.timeout(30000) })
+        const output = await s3.send(new GetObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME || 'deploydock-assets', Key: key }), { abortSignal: AbortSignal.timeout(30000) })
         return { body: output.Body as Readable, contentType: output.ContentType, cacheControl: output.CacheControl, etag: output.ETag }
     },
     forward: forwardWeb
 })
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/launchpad')
-    .then(() => app.listen(Number(process.env.PORT || 8000), () => console.log('LaunchPad deployment proxy listening')))
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/deploydock')
+    .then(() => app.listen(Number(process.env.PORT || 8000), () => console.log('DeployDock deployment proxy listening')))
     .catch(() => { console.error('Proxy cannot connect to MongoDB'); process.exitCode = 1 })

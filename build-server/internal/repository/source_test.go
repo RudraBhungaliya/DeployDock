@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"launchpad/build-server/internal/domain"
+	"deploydock/build-server/internal/domain"
 )
 
 type sourceRecorder struct{ commands []domain.Command }
@@ -73,7 +73,7 @@ func TestCloneChecksOutRequestedCommitAfterBranchAdvances(t *testing.T) {
 		return strings.TrimSpace(string(output))
 	}
 	git("init")
-	git("config", "user.name", "LaunchPad test")
+	git("config", "user.name", "DeployDock test")
 	git("config", "user.email", "test@example.invalid")
 	file := filepath.Join(repository, "index.html")
 	if err := os.WriteFile(file, []byte("first version"), 0600); err != nil {

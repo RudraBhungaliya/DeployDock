@@ -1,4 +1,4 @@
-name: launchpad
+name: deploydock
 
 x-logging: &logging
   driver: json-file
@@ -9,7 +9,7 @@ x-logging: &logging
 x-service: &service
   restart: unless-stopped
   logging: *logging
-  networks: [launchpad]
+  networks: [deploydock]
 
 x-aws-environment: &aws-environment
   AWS_REGION: ${AWS_REGION:-ap-south-1}
@@ -56,12 +56,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}
-      MONGO_INITDB_DATABASE: launchpad
+      MONGO_INITDB_DATABASE: deploydock
       MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?Set MONGO_APP_PASSWORD in .env}
     command: [mongod, --wiredTigerCacheSizeGB, "0.35"]
     volumes:
       - mongo-data:/data/db
-      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/launchpad.js:ro
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/deploydock.js:ro
     healthcheck:
       test: [CMD-SHELL, 'mongosh --quiet --username admin --password "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "quit(db.adminCommand({ping:1}).ok ? 0 : 1)"']
       interval: 10s
@@ -92,7 +92,7 @@ services:
     environment:
       <<: *aws-environment
       PORT: "9000"
-      MONGODB_URI: mongodb://launchpad:${MONGO_APP_PASSWORD}@mongodb:27017/launchpad?authSource=launchpad
+      MONGODB_URI: mongodb://deploydock:${MONGO_APP_PASSWORD}@mongodb:27017/deploydock?authSource=deploydock
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       AWS_ECS_CLUSTER: ${AWS_ECS_CLUSTER:?Set AWS_ECS_CLUSTER in .env}
@@ -138,7 +138,7 @@ services:
     command: [node, dist/worker.js]
     environment:
       <<: *aws-environment
-      MONGODB_URI: mongodb://launchpad:${MONGO_APP_PASSWORD}@mongodb:27017/launchpad?authSource=launchpad
+      MONGODB_URI: mongodb://deploydock:${MONGO_APP_PASSWORD}@mongodb:27017/deploydock?authSource=deploydock
       KAFKA_BROKERS: kafka:9092
       INTERNAL_API_URL: http://api-server:9000
       WORKER_API_TOKEN: ${WORKER_API_TOKEN:?Set WORKER_API_TOKEN in .env}
@@ -160,7 +160,7 @@ services:
     <<: *service
     build: ./logs-service
     environment:
-      MONGODB_URI: mongodb://launchpad:${MONGO_APP_PASSWORD}@mongodb:27017/launchpad?authSource=launchpad
+      MONGODB_URI: mongodb://deploydock:${MONGO_APP_PASSWORD}@mongodb:27017/deploydock?authSource=deploydock
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
       JWT_SECRET: ${JWT_SECRET}
       SOCKET_PORT: "9002"
@@ -174,7 +174,7 @@ services:
     build: ./s3-reverse-proxy
     environment:
       <<: *aws-environment
-      MONGODB_URI: mongodb://launchpad:${MONGO_APP_PASSWORD}@mongodb:27017/launchpad?authSource=launchpad
+      MONGODB_URI: mongodb://deploydock:${MONGO_APP_PASSWORD}@mongodb:27017/deploydock?authSource=deploydock
     depends_on:
       mongodb: {condition: service_healthy}
     mem_limit: 256m
@@ -197,8 +197,8 @@ services:
     mem_limit: 128m
 
 networks:
-  launchpad:
-    name: launchpad-network
+  deploydock:
+    name: deploydock-network
 
 volumes:
   kafka-data:

@@ -53,8 +53,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       rememberDestination();
       logout("/login?error=session-expired");
     };
-    window.addEventListener("launchpad:unauthorized", expired);
-    return () => window.removeEventListener("launchpad:unauthorized", expired);
+    window.addEventListener("deploydock:unauthorized", expired);
+    return () => window.removeEventListener("deploydock:unauthorized", expired);
   }, [logout]);
   const value = React.useMemo(
     () => ({ user, loading, logout }),
